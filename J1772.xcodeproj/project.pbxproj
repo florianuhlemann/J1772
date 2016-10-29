@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9E15A0DB1DC5329800A0FB36 /* J1772.c in Sources */ = {isa = PBXBuildFile; fileRef = 9E15A0D91DC5329800A0FB36 /* J1772.c */; };
 		9E583FDB1DC52F3D00DD3670 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 9E583FDA1DC52F3D00DD3670 /* main.c */; };
-		9E583FE21DC5323500DD3670 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 9E583FE11DC5323500DD3670 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,6 +24,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9E15A0D91DC5329800A0FB36 /* J1772.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = J1772.c; sourceTree = "<group>"; };
+		9E15A0DA1DC5329800A0FB36 /* J1772.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = J1772.h; sourceTree = "<group>"; };
 		9E583FD71DC52F3D00DD3670 /* J1772 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = J1772; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E583FDA1DC52F3D00DD3670 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		9E583FE11DC5323500DD3670 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -60,6 +62,8 @@
 		9E583FD91DC52F3D00DD3670 /* J1772 */ = {
 			isa = PBXGroup;
 			children = (
+				9E15A0D91DC5329800A0FB36 /* J1772.c */,
+				9E15A0DA1DC5329800A0FB36 /* J1772.h */,
 				9E583FDA1DC52F3D00DD3670 /* main.c */,
 			);
 			path = J1772;
@@ -123,7 +127,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9E583FE21DC5323500DD3670 /* README.md in Sources */,
+				9E15A0DB1DC5329800A0FB36 /* J1772.c in Sources */,
 				9E583FDB1DC52F3D00DD3670 /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -253,6 +257,7 @@
 				9E583FE01DC52F3D00DD3670 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
