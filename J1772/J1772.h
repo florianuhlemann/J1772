@@ -13,17 +13,19 @@ int percent_to_amps(double percent);
 double amps_to_percent(int amps);
 
 /// There are five defined states the vehicle can be in.
-/// A - disconnected
-/// B - connected, but not charging
-/// C - connected and charging
-/// D - connected, charging and requesting ventilation
-/// F - fault
+/// A  - disconnected
+/// AB - connected, but no PWM started yet
+/// B  - connected, but not charging
+/// C  - connected and charging
+/// D  - connected, charging and requesting ventilation
+/// F  - fault
 typedef enum {
     disconnected = 0xA0,
-    connected = 0xB1,
-    charging = 0xC2,
-    ventilation = 0xD3,
-    fault = 0xE4
+    connected_no_pwm = 0xB1,
+    connected = 0xC2,
+    charging = 0xD3,
+    ventilation = 0xE4,
+    fault = 0xF5
 } VehicleState;
 
 typedef enum {

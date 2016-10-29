@@ -45,68 +45,75 @@ double amps_to_percent(int amps) {
 VehicleState detectVehicleState(double upperVoltage, double lowerVoltage, double referenceVoltage) {
     
     bool plus_12v  = false,
-    plus_9v   = false,
-    plus_6v   = false,
-    plus_3v   = false,
-    minus_12v = false;
+    plus_9v     = false,
+    plus_6v     = false,
+    plus_3v     = false,
+    minus_12v   = false,
+    minus_fault = false;
     
+    //Checking if upper voltage = 12.00
     if (((upperVoltage / referenceVoltage * 12.0) <= 12.6) && ((upperVoltage / referenceVoltage * 12.0 ) >= 11.4)) {
-        //printf("Upper voltage is between 11.4V and 12.6V. Vehicle is disconnected.\n");
         plus_12v = true;
-    } else {
-        if (((upperVoltage / referenceVoltage * 12.0) <= 9.56) && ((upperVoltage / referenceVoltage * 12.0 ) >= 8.36)) {
-            //printf("Upper voltage is between 8.36V and 9.56V. Vehicle is connected.\n");
-            plus_9v = true;
-            if (PWM_is_running == false) {
-                //start PWM
-                PWM_is_running = true;
-            }
+        if (PWM_is_running) {
+            PWM_is_running = false;
         }
-        if (((upperVoltage / referenceVoltage * 12.0) <= 6.49) && ((upperVoltage / referenceVoltage * 12.0 ) >= 5.48)) {
-            //printf("Upper voltage is between 5.48V and 6.49V. Vehicle is charging.\n");
-            plus_6v = true;
-        }
-        if (((upperVoltage / referenceVoltage * 12.0) <= 3.25) && ((upperVoltage / referenceVoltage * 12.0 ) >= 2.62)) {
-            //printf("Upper voltage is between 2.62V and 3.25V. Vehicle requests ventilation.\n");
-            plus_3v = true;
-        }
-        if (((lowerVoltage / referenceVoltage * 12.0) <= 12.6) && ((lowerVoltage / referenceVoltage * 12.0 ) >= 11.4)) {
-            //printf("Lower voltage is between -11.4V and -12.6V. PWM is active.\n");
-            minus_12v = true;
+    }
+    //Checking if upper voltage = 9.00
+    if (((upperVoltage / referenceVoltage * 12.0) <= 9.56) && ((upperVoltage / referenceVoltage * 12.0 ) >= 8.36)) {
+        plus_9v = true;
+    }
+    //Checking if upper voltage = 6.00
+    if (((upperVoltage / referenceVoltage * 12.0) <= 6.49) && ((upperVoltage / referenceVoltage * 12.0 ) >= 5.48)) {
+        plus_6v = true;
+    }
+    //Checking if upper voltage = 3.00
+    if (((upperVoltage / referenceVoltage * 12.0) <= 3.25) && ((upperVoltage / referenceVoltage * 12.0 ) >= 2.62)) {
+        plus_3v = true;
+    }
+    //Checking if lower voltage = -12.00
+    //Special Case: If upper voltage is NOT +12.0V, then lower voltage must not be other than -12V. (PWM active)
+    //Special Case: Transition from no PWM to PWM phase is tricky when checking lower voltage.
+    if (((lowerVoltage / referenceVoltage * 12.0) <= 12.6) && ((lowerVoltage / referenceVoltage * 12.0 ) >= 11.4)) {
+        minus_12v = true;
+    } else if (PWM_is_running) {
+        if (PWM_is_running) {
+            minus_fault = true;
         } else {
-            //printf("Lower voltage is outside of envelope. Error detected.\n");
+            //turn PWM on
+            PWM_is_running = true;
         }
     }
     
-    int binaryValue = plus_12v << 0 | plus_9v << 1 | plus_6v << 2 | plus_3v << 3 | minus_12v << 4;
+    int binaryValue = plus_12v << 0 | plus_9v << 1 | plus_6v << 2 | plus_3v << 3 | minus_12v << 4 | PWM_is_running << 5;
     
     switch (binaryValue) {
-        case 0b00001:
+        case 0b000001:
+        case 0b010001:
             printf("State A - Vehicle disconnected. No PWM.\n");
-            //stop PWM
             PWM_is_running = false;
+            return disconnected;
             break;
-        case 0b00010:
+        case 0b000010:
+        case 0b010010:
             printf("State AB - Vehicle connected. PWM not started yet.\n");
-            //start PWM
             PWM_is_running = true;
+            return connected_no_pwm;
             break;
-        case 0b10010:
+        case 0b110010:
             printf("State B - Vehicle connected. PWM active.\n");
+            return connected;
             break;
-        case 0b10100:
+        case 0b110100:
             printf("State C - Vehicle charging. PWM active.\n");
+            return charging;
             break;
-        case 0b11000:
+        case 0b111000:
             printf("State D - Vehicle with ventilation. PWM active.\n");
+            return ventilation;
             break;
         default:
             printf("State F - Unknown condition or error occured.\n");
+            return fault;
             break;
     }
-    
-    
-    VehicleState myState;
-    myState = connected;
-    return myState;
 }
